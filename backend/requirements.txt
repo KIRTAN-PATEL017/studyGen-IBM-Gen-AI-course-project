@@ -1,0 +1,12 @@
+Flask
+Flask-CORS
+PyPDF2
+python-dotenv
+langchain
+sentence-transformers
+faiss-cpu
+langchain>=0.1.0
+langchain-community>=0.0.20
+transformers
+torch
+huggingface-hub
