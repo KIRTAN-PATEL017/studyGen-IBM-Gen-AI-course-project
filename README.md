@@ -120,19 +120,14 @@ npm run lint     # Run ESLint
 - Use `python app.py` to start with hot reloading
 - Check logs for debugging information
 
-## Production Deployment
+## Screenshots
+![Home](assets/home.png)
+![Loading](assets/loading.png)
+![summary](assets/summary.png)
+![Notes](assets/notes.png)
+![Flashcard](assets/flashcard.png)
 
-### Frontend
-```bash
-npm run build
-# Deploy the dist/ folder to your hosting service
-```
 
-### Backend
-1. Use a production WSGI server like Gunicorn
-2. Set up proper environment variables
-3. Configure file storage and cleanup
-4. Implement rate limiting and authentication
 
 ## Contributing
 
@@ -142,9 +137,6 @@ npm run build
 4. Test thoroughly
 5. Submit a pull request
 
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
 
 ## Support
 
