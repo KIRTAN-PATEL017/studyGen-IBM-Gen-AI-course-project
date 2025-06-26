@@ -133,7 +133,7 @@ function App() {
               </button>
             </div>
             
-            <div className="grid lg:grid-cols-2 gap-8">
+            <div className="grid lg:grid-cols-1 gap-8">
               <div className="space-y-8">
                 <Summary summary={studyMaterial.summary} />
                 <Notes notes={studyMaterial.notes} />
