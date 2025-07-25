@@ -58,23 +58,15 @@ class AIService:
             # Create vector store
             vector_store = FAISS.from_texts(texts, self.embeddings)
             self.logger.info("Vector store created successfully")
-            
+            self.vectorStore = vector_store
             return vector_store
             
         except Exception as e:
             self.logger.error(f"Error creating vector store: {str(e)}")
             raise
     
+
     def generate_summary(self, text: str) -> str:
-        """
-        Generate a summary of the input text using RAG.
-        
-        Args:
-            text (str): Input text to summarize
-            
-        Returns:
-            str: Generated summary
-        """
         try:
             vector_store = self.create_vector_store(text)
             
@@ -95,8 +87,6 @@ class AIService:
             2. Maintains logical flow
             3. Is concise but comprehensive
             4. Uses clear language
-            
-            Text to summarize: {text}
             """
             
             result = qa_chain.run(prompt.format(text=text[:2000]))  # Limit input length
@@ -106,18 +96,10 @@ class AIService:
             self.logger.error(f"Error generating summary: {str(e)}")
             return "Failed to generate summary. Please try again."
     
+
     def generate_notes(self, text: str) -> List[str]:
-        """
-        Generate key notes from the input text.
-        
-        Args:
-            text (str): Input text to extract notes from
-            
-        Returns:
-            List[str]: List of key notes
-        """
         try:
-            vector_store = self.create_vector_store(text)
+            vector_store = self.vectorStore
             
             qa_chain = RetrievalQA.from_chain_type(
                 llm=self.llm,
@@ -159,18 +141,10 @@ class AIService:
             self.logger.error(f"Error generating notes: {str(e)}")
             return ["Failed to generate notes. Please try again."]
     
+
     def generate_flashcards(self, text: str) -> List[Dict[str, str]]:
-        """
-        Generate flashcards with questions and answers from the input text.
-        
-        Args:
-            text (str): Input text to create flashcards from
-            
-        Returns:
-            List[Dict[str, str]]: List of flashcards with questions and answers
-        """
         try:
-            vector_store = self.create_vector_store(text)
+            vector_store = self.vectorStore
             
             qa_chain = RetrievalQA.from_chain_type(
                 llm=self.llm,
@@ -244,6 +218,7 @@ class AIService:
                 'answer': 'Please try again with a different document.'
             }]
     
+
     def generate_study_materials(self, text: str) -> Dict[str, Any]:
         """
         Generate complete study materials including summary, notes, and flashcards.
@@ -257,6 +232,7 @@ class AIService:
         try:
             self.logger.info("Starting study materials generation...")
             
+            vector_store = self.create_vector_store(text)
             # Generate all materials
             summary = self.generate_summary(text)
             notes = self.generate_notes(text)

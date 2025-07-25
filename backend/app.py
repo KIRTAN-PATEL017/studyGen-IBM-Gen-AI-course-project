@@ -4,6 +4,7 @@ import os
 import uuid
 import logging
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import RequestEntityTooLarge
 from pdf_processor import PDFProcessor
 from ai_service import AIService
 
@@ -17,7 +18,7 @@ CORS(app)
 # Configuration
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
-MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
+MAX_CONTENT_LENGTH = 4 * 1024 * 1024  # 4MB max file size
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
@@ -53,6 +54,8 @@ def process_pdf():
         if not allowed_file(file.filename):
             return jsonify({'error': 'Only PDF files are allowed'}), 400
         
+        
+
         # Generate unique filename
         filename = secure_filename(file.filename)
         unique_filename = f"{uuid.uuid4()}_{filename}"
@@ -88,14 +91,16 @@ def process_pdf():
                 logger.info(f"Cleaned up file: {filepath}")
             except Exception as e:
                 logger.warning(f"Failed to clean up file {filepath}: {str(e)}")
-    
+                
+    except RequestEntityTooLarge as e:
+        raise e
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return jsonify({'error': 'An unexpected error occurred'}), 500
 
-@app.errorhandler(413)
+@app.errorhandler(RequestEntityTooLarge)
 def too_large(e):
-    return jsonify({'error': 'File too large. Maximum size is 16MB'}), 413
+    return jsonify({'error': 'File too large. Maximum size is 4MB'}), 413
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)
