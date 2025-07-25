@@ -44,13 +44,15 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to process PDF');
+        let errmsg = 'Failed to process PDF';
+        if(response.status == 413){
+          errmsg = 'File too large. Maximum allowed size is 4MB.';
+        }
+        throw new Error(errmsg);
       }
-
       setCurrentStep('generating');
       
-      const result = await response.json();
-      
+      const result = await response.json();    
       setStudyMaterial(result);
       setCurrentStep('completed');
     } catch (err) {
